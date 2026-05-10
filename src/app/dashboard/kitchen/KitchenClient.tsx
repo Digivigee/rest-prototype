@@ -11,7 +11,7 @@ type Ticket = any;
 export default function KitchenClient({ initialTickets }: { initialTickets: Ticket[] }) {
   const router = useRouter()
   const [loadingId, setLoadingId] = useState<string | null>(null)
-  const [now, setNow] = useState(Date.now())
+  const [now, setNow] = useState(() => Date.now())
   const { showToast } = useToast()
 
   useEffect(() => {

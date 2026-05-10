@@ -88,16 +88,28 @@ src/
 ## ⚠️ Known Limitations & Future Improvements
 
 ### Limitations
-- **Auth**: Demo-only role selector (no production password hashing/JWT implemented).
-- **Persistence**: Uses SQLite; ideal for prototyping but not recommended for high-concurrency production.
-- **State**: Live updates use `router.refresh()` polling rather than WebSockets.
+- **Auth**: Fully implemented NextAuth.js (v5) with credentials provider and session management.
+- **Persistence**: Optimized SQLite for prototype; easily swappable to PostgreSQL via Prisma.
 
-### Future Improvements
-- [ ] Implement robust Authentication (NextAuth.js).
-- [ ] Migrate to PostgreSQL for production scalability.
-- [ ] Integrate Real-time updates with WebSockets (Socket.io/Pusher).
-- [ ] Add multiple outlet/branch management.
-- [ ] Customer-facing QR Code ordering system.
+## 🚢 Production Deployment
+
+### 1. Build and Run via Docker (Recommended)
+This project is configured for standalone builds and includes a multi-stage Dockerfile.
+```bash
+docker build -t spicehub-rms .
+docker run -p 3000:3000 --env-file .env spicehub-rms
+```
+
+### 2. Manual Deployment
+1. Set `output: 'standalone'` in `next.config.ts` (already done).
+2. Run `npm run build`.
+3. Start the server: `NODE_ENV=production node .next/standalone/server.js`.
+
+### 3. Environment Variables
+Ensure the following are set in your production environment:
+- `AUTH_SECRET`: Random string for session encryption.
+- `DATABASE_URL`: Connection string (can be SQLite or Postgres).
+- `NEXTAUTH_URL`: Your production domain.
 
 ---
 **SpiceHub v1.0** — Premium Restaurant Operations.
