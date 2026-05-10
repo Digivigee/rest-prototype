@@ -108,8 +108,15 @@ docker run -p 3000:3000 --env-file .env spicehub-rms
 ### 3. Environment Variables
 Ensure the following are set in your production environment:
 - `AUTH_SECRET`: Random string for session encryption.
-- `DATABASE_URL`: Connection string (can be SQLite or Postgres).
+- `DATABASE_URL`: Connection string.
 - `NEXTAUTH_URL`: Your production domain.
+
+### 4. Vercel Deployment
+1. **Push to GitHub**: Connect your repository to Vercel.
+2. **Environment Variables**: Add `AUTH_SECRET` and `DATABASE_URL` in the Vercel Dashboard.
+3. **Database Warning**: Vercel is **serverless**. The local SQLite (`dev.db`) will NOT persist data.
+   - **Recommendation**: Use **PostgreSQL** (e.g., [Neon](https://neon.tech/)) or **Turso** (Managed SQLite) for persistence.
+   - Update `schema.prisma` provider to `"postgresql"` if you switch to Postgres.
 
 ---
 **SpiceHub v1.0** — Premium Restaurant Operations.

@@ -2,8 +2,9 @@ import { getPublicRestaurant } from './actions'
 import MenuClient from './MenuClient'
 import { notFound } from 'next/navigation'
 
-export default async function PublicMenuPage({ params }: { params: { slug: string } }) {
-  const restaurant = await getPublicRestaurant(params.slug)
+export default async function PublicMenuPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const restaurant = await getPublicRestaurant(slug)
 
   if (!restaurant) {
     notFound()
