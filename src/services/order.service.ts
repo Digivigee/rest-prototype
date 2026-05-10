@@ -37,11 +37,13 @@ export class OrderService {
     });
 
     // Add background task for notifications/KOT
-    await orderQueue.add('new-order', {
-      orderId: order.id,
-      restaurantId,
-      items: order.items
-    });
+    if (orderQueue) {
+      await orderQueue.add('new-order', {
+        orderId: order.id,
+        restaurantId,
+        items: order.items
+      });
+    }
 
     // Invalidate relevant caches
     await cacheDelete(`active_orders:${restaurantId}`);

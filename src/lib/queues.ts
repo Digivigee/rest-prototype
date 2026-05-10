@@ -1,21 +1,21 @@
 import { Queue, Worker } from 'bullmq';
 import redis, { redisOptions } from './redis';
 
-const connection = {
+const connection = redis ? {
   ...redisOptions,
   host: redis.options.host,
   port: redis.options.port,
   password: redis.options.password,
-};
+} : undefined;
 
-// Queues (Lazy connection)
-export const orderQueue = new Queue('order-tasks', { connection });
-export const billingQueue = new Queue('billing-tasks', { connection });
+// Queues (Only initialize if connection exists)
+export const orderQueue = connection ? new Queue('order-tasks', { connection }) : null;
+export const billingQueue = connection ? new Queue('billing-tasks', { connection }) : null;
 
-// Workers (Optional for local dev)
+// Workers (Only initialize if connection exists)
 export let orderWorker: Worker | null = null;
 
-if (process.env.REDIS_URL || process.env.NODE_ENV === 'production') {
+if (connection) {
   orderWorker = new Worker('order-tasks', async (job) => {
     console.log(`Processing order job ${job.id}:`, job.data);
   }, { connection });
@@ -28,5 +28,5 @@ if (process.env.REDIS_URL || process.env.NODE_ENV === 'production') {
     console.log(`${job?.id} has failed with ${err.message}`);
   });
 } else {
-  console.log('⚠️ Redis not configured. Workers are disabled.');
+  console.log('⚠️ Redis not configured. Queues and Workers are disabled.');
 }
